@@ -1,0 +1,46 @@
+{
+    "description" : "Book",
+    "type" : "object",
+    "properties" : {
+        "title" : {
+            "title" : "Book's title",
+            "type" : "string",
+            "required" : true
+        },
+        "authors" : {
+            "title" : "Book's authors",
+            "type" : "array",
+            "required": true,
+            "items": {
+                "title": "A person",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "title": "Author's name",
+                        "type": "string",
+                        "required": true
+                    },
+                    "birthdate": {
+                        "title": "Author's birth date",
+                        "type": "string",
+                        "pattern": "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}",
+                        "required": true
+                    }
+                }
+            },
+            "minItems": 1
+        },
+        "isbn" : {
+            "title" : "Book ISBN",
+            "type" : "string",
+            "pattern": "[0-9]{13}",
+            "required" : true
+        },
+        "price" : {
+            "title" : "Book selling price",
+            "type" : "number",
+            "required" : true
+        }
+    },
+    "additionalProperties" : false
+}
