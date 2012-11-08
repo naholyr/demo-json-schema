@@ -117,9 +117,11 @@ $app->get('/books/{id}', function (Request $request) use ($app) {
   return $app->json($request->get('book'));
 })->before($checkBookId)->after($addLinkToSchema);
 
-$app->put('/books/{id}', $checkJSON, $checkBook, function () use ($app) {
-  return $app->abort(501);
-})->before($checkJSON)->before($checkBook)->after($addLinkToSchema);
+$app->put('/books/{id}', function (Request $request) use ($app) {
+  $app['books_db']->set($request->get('id'), json_decode($request->getContent(), true));
+  $app['books_db']->persist();
+  return new Response(null, 204);
+})->before($checkBookId)->before($checkJSON)->before($checkBook)->after($addLinkToSchema);
 
 $app->delete('/books/{id}', function () use ($app) {
   return $app->abort(501);
