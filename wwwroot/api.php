@@ -123,9 +123,11 @@ $app->put('/books/{id}', function (Request $request) use ($app) {
   return new Response(null, 204);
 })->before($checkBookId)->before($checkJSON)->before($checkBook)->after($addLinkToSchema);
 
-$app->delete('/books/{id}', function () use ($app) {
-  return $app->abort(501);
-});
+$app->delete('/books/{id}', function (Request $request) use ($app) {
+  $app['books_db']->remove($request->get('id'));
+  $app['books_db']->persist();
+  return new Response(null, 204);
+})->before($checkBookId);
 
 $app->delete('/books', function () use ($app) {
   $app['books_db']->clear();
