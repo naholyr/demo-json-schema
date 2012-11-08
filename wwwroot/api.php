@@ -72,7 +72,7 @@ $checkJSON = function (Request $request) use ($app) {
 
 // Add link to schema
 
-function addLinkToSchema (Response $response) {
+$addLinkToSchema = function (Request $request, Response $response) use ($app) {
   if ($response instanceof JsonResponse) {
     $links = $response->headers->get('Link');
     if (!is_array($links)) {
@@ -98,20 +98,20 @@ $app->get('/books/$schema', function () use ($app, $schema) {
 // "books" API
 
 $app->get('/books', function () use ($app) {
-  return addLinkToSchema($app->json($app['books_db']['data']));
-});
+  return $app->json($app['books_db']['data']);
+})->after($addLinkToSchema);
 
-$app->post('/books', $checkJSON, function () use ($app) {
+$app->post('/books', function () use ($app) {
   return $app->abort(501);
-});
+})->before($checkJSON)->after($addLinkToSchema);
 
 $app->get('/books/{id}', function () use ($app) {
-  return addLinkToSchema($app->abort(501));
-});
-
-$app->put('/books/{id}', $checkJSON, function () use ($app) {
   return $app->abort(501);
-});
+})->after($addLinkToSchema);
+
+$app->put('/books/{id}', $checkJSON, $checkBook, function () use ($app) {
+  return $app->abort(501);
+})->before($checkJSON)->after($addLinkToSchema);
 
 $app->delete('/books/{id}', function () use ($app) {
   return $app->abort(501);
