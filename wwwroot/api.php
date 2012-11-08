@@ -65,6 +65,15 @@ $checkBook = function (Request $request) use ($app) {
 };
 
 
+// Check {id} is a valid book
+
+$checkBookId = function (Request $request) use ($app) {
+  $book = $app['books_db']->get($request->get('id'));
+  if (!$book) return $app->abort(404);
+  $request->request->set('book', $book);
+};
+
+
 // Add link to schema
 
 $addLinkToSchema = function (Request $request, Response $response) use ($app) {
