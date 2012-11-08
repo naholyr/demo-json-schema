@@ -56,6 +56,20 @@ $app->error(function (Exception $e, $code) use ($app) {
 });
 
 
+// Only accept JSON
+
+$checkJSON = function (Request $request) use ($app) {
+  if (0 !== strpos($request->headers->get('Content-Type'), 'application/json')) {
+    return $app->abort(400, 'application/json required');
+  }
+  $data = json_decode($request->getContent(), true);
+  if (is_null($data)) {
+    return $app->abort(400, 'valid non-null JSON expected');
+  }
+  $request->request->replace(is_array($data) ? $data : array());
+};
+
+
 // Add link to schema
 
 function addLinkToSchema (Response $response) {
@@ -95,7 +109,7 @@ $app->get('/books/{id}', function () use ($app) {
   return addLinkToSchema($app->abort(501));
 });
 
-$app->put('/books/{id}', function () use ($app) {
+$app->put('/books/{id}', $checkJSON, function () use ($app) {
   return $app->abort(501);
 });
 
