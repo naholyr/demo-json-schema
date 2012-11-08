@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../src/FileDB.php';
 
 
 use Symfony\Component\HttpFoundation\Request;
@@ -19,12 +20,7 @@ if (!is_file($data_file)) {
   copy($data_file . '-dist', $data_file);
 }
 
-$app['books_db'] = array(
-  'data' => require $data_file,
-  'save' => function () use ($app, $data_file) {
-    file_put_contents($data_file, $app['books_db']['data']);
-  }
-);
+$app['books_db'] = new FileDB($data_file);
 
 
 // Books validator
@@ -97,7 +93,7 @@ $app->get('/books/$schema', function () use ($app) {
 // "books" API
 
 $app->get('/books', function () use ($app) {
-  return $app->json($app['books_db']['data']);
+  return $app->json($app['books_db']->all());
 })->after($addLinkToSchema);
 
 $app->post('/books', function () use ($app) {
