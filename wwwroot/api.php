@@ -29,20 +29,8 @@ $app['books_db'] = array(
 
 // Books validator
 
-$schema = json_decode(file_get_contents('../books.schema.json'));
-$json_schema_validator = new JsonSchema\Validator();
-$app['book_validator'] = function ($book, &$errors) use ($schema, $json_schema_validator) {
-  if (is_string($book)) {
-    $book = json_decode($book);
-  }
-  $json_schema_validator->check($book, $schema);
-  if ($json_schema_validator->isValid()) {
-    return true;
-  } else {
-    $errors = $json_schema_validator->getErrors();
-    return false;
-  }
-};
+$app['book_schema'] = json_decode(file_get_contents('../books.schema.json'));
+$app['json_schema_validator'] = new JsonSchema\Validator();
 
 
 // Error management
@@ -66,7 +54,18 @@ $checkJSON = function (Request $request) use ($app) {
   if (is_null($data)) {
     return $app->abort(400, 'valid non-null JSON expected');
   }
-  $request->request->replace(is_array($data) ? $data : array());
+};
+
+
+// Only accept valid book
+
+$checkBook = function (Request $request) use ($app) {
+  $book = json_decode($request->getContent());
+  $validator = $app['json_schema_validator'];
+  $validator->check($book, $app['book_schema']);
+  if (!$validator->isValid()) {
+    return $app->json($validator->getErrors(), 400);
+  }
 };
 
 
@@ -88,8 +87,8 @@ $addLinkToSchema = function (Request $request, Response $response) use ($app) {
 
 // Provide schema
 
-$app->get('/books/$schema', function () use ($app, $schema) {
-  $response = $app->json($schema);
+$app->get('/books/$schema', function () use ($app) {
+  $response = $app->json($app['book_schema']);
   $response->headers->set('Content-Type', 'Content-Type: application/json; profile=http://json-schema.org/draft-03/hyper-schema');
   return $response;
 });
@@ -103,7 +102,7 @@ $app->get('/books', function () use ($app) {
 
 $app->post('/books', function () use ($app) {
   return $app->abort(501);
-})->before($checkJSON)->after($addLinkToSchema);
+})->before($checkJSON)->before($checkBook)->after($addLinkToSchema);
 
 $app->get('/books/{id}', function () use ($app) {
   return $app->abort(501);
@@ -111,7 +110,7 @@ $app->get('/books/{id}', function () use ($app) {
 
 $app->put('/books/{id}', $checkJSON, $checkBook, function () use ($app) {
   return $app->abort(501);
-})->before($checkJSON)->after($addLinkToSchema);
+})->before($checkJSON)->before($checkBook)->after($addLinkToSchema);
 
 $app->delete('/books/{id}', function () use ($app) {
   return $app->abort(501);
