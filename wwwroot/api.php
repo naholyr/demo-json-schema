@@ -27,6 +27,17 @@ $app['books_db'] = array(
 );
 
 
+// Error management
+
+$app->error(function (Exception $e, $code) use ($app) {
+  $message = $e->getMessage();
+  if (!$message) {
+    $message = Response::$statusTexts[$code];
+  }
+  return $app->json($message, $code);
+});
+
+
 // "books" API
 
 $app->get('/books', function () use ($app) {
@@ -34,23 +45,23 @@ $app->get('/books', function () use ($app) {
 });
 
 $app->post('/books', $checkJSON, function () use ($app) {
-  // TODO
+  return $app->abort(501);
 });
 
 $app->get('/books/{id}', function () use ($app) {
-  // TODO
+  return $app->abort(501);
 });
 
 $app->put('/books/{id}', function () use ($app) {
-  // TODO
+  return $app->abort(501);
 });
 
 $app->delete('/books/{id}', function () use ($app) {
-  // TODO
+  return $app->abort(501);
 });
 
 $app->delete('/books', function () use ($app) {
-  // TODO
+  return $app->abort(501);
 });
 
 
