@@ -56,6 +56,22 @@ $app->error(function (Exception $e, $code) use ($app) {
 });
 
 
+// Add link to schema
+
+$app->after(function (Request $request, Response $response) use ($app) {
+  if ($response instanceof JsonResponse) {
+    $links = $response->headers->get('Link');
+    if (!is_array($links)) {
+      $links = array();
+    }
+    $schema_url = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . '/books/$schema';
+    $links[] = '<' . $schema_url . '>; rel="describedby"';
+    $response->headers->set('Link', $links);
+  }
+  return $response;
+});
+
+
 // Provide schema
 
 $app->get('/books/$schema', function () use ($app, $schema) {
