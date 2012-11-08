@@ -96,8 +96,12 @@ $app->get('/books', function () use ($app) {
   return $app->json($app['books_db']->all());
 })->after($addLinkToSchema);
 
-$app->post('/books', function () use ($app) {
-  return $app->abort(501);
+$app->post('/books', function (Request $request) use ($app) {
+  $id = $app['books_db']->add(json_decode($request->getContent(), true));
+  $app['books_db']->persist();
+  $response = new Response(201);
+  $response->headers->set('location', '/books/' . $id);
+  return $response;
 })->before($checkJSON)->before($checkBook)->after($addLinkToSchema);
 
 $app->get('/books/{id}', function () use ($app) {
