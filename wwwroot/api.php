@@ -113,9 +113,9 @@ $app->post('/books', function (Request $request) use ($app) {
   return $response;
 })->before($checkJSON)->before($checkBook)->after($addLinkToSchema);
 
-$app->get('/books/{id}', function () use ($app) {
-  return $app->abort(501);
-})->after($addLinkToSchema);
+$app->get('/books/{id}', function (Request $request) use ($app) {
+  return $app->json($request->get('book'));
+})->before($checkBookId)->after($addLinkToSchema);
 
 $app->put('/books/{id}', $checkJSON, $checkBook, function () use ($app) {
   return $app->abort(501);
