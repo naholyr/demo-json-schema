@@ -1,7 +1,8 @@
 {
     "name": "naholyr/JSONSchema",
     "require": {
-        "justinrainbow/json-schema": "1.2.1"
+        "justinrainbow/json-schema": "1.2.1",
+        "silex/silex": "1.0.*@dev"
     },
     "authors": [
         {

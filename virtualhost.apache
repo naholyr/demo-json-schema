@@ -1,0 +1,13 @@
+<VirtualHost *:80>
+    DocumentRoot /path/to/jsonschema/wwwroot
+    ServerName json-schema.local
+
+    <Directory /path/to/jsonschema/wwwroot>
+        RewriteEngine On
+        <IfModule mod_vhost_alias.c>
+            RewriteBase /
+        </IfModule>
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ api.php [QSA,L]
+    </Directory>
+</VirtualHost>
