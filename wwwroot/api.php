@@ -58,18 +58,18 @@ $app->error(function (Exception $e, $code) use ($app) {
 
 // Add link to schema
 
-$app->after(function (Request $request, Response $response) use ($app) {
+function addLinkToSchema (Response $response) {
   if ($response instanceof JsonResponse) {
     $links = $response->headers->get('Link');
     if (!is_array($links)) {
       $links = array();
     }
-    $schema_url = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . '/books/$schema';
+    $schema_url = 'http' . (@$_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . '/books/$schema';
     $links[] = '<' . $schema_url . '>; rel="describedby"';
     $response->headers->set('Link', $links);
   }
   return $response;
-});
+};
 
 
 // Provide schema
@@ -84,7 +84,7 @@ $app->get('/books/$schema', function () use ($app, $schema) {
 // "books" API
 
 $app->get('/books', function () use ($app) {
-  return $app->json($app['books_db']['data']);
+  return addLinkToSchema($app->json($app['books_db']['data']));
 });
 
 $app->post('/books', $checkJSON, function () use ($app) {
@@ -92,7 +92,7 @@ $app->post('/books', $checkJSON, function () use ($app) {
 });
 
 $app->get('/books/{id}', function () use ($app) {
-  return $app->abort(501);
+  return addLinkToSchema($app->abort(501));
 });
 
 $app->put('/books/{id}', function () use ($app) {
