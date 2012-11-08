@@ -56,6 +56,15 @@ $app->error(function (Exception $e, $code) use ($app) {
 });
 
 
+// Provide schema
+
+$app->get('/books/$schema', function () use ($app, $schema) {
+  $response = $app->json($schema);
+  $response->headers->set('Content-Type', 'Content-Type: application/json; profile=http://json-schema.org/draft-03/hyper-schema');
+  return $response;
+});
+
+
 // "books" API
 
 $app->get('/books', function () use ($app) {
