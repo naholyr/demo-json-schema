@@ -14,7 +14,7 @@ $app = new Silex\Application();
 
 // Books lolilol database
 
-$data_file = __DIR__ . '/data/books.data.php';
+$data_file = __DIR__ . '/../data/books.data.php';
 if (!is_file($data_file)) {
   copy($data_file . '-dist', $data_file);
 }
