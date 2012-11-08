@@ -117,7 +117,9 @@ $app->delete('/books/{id}', function () use ($app) {
 });
 
 $app->delete('/books', function () use ($app) {
-  return $app->abort(501);
+  $app['books_db']->clear();
+  $app['books_db']->persist();
+  return new Response(null, 204);
 });
 
 
