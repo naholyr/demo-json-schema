@@ -1,0 +1,12 @@
+{
+    "name": "naholyr/JSONSchema",
+    "require": {
+        "justinrainbow/json-schema": "1.2.1"
+    },
+    "authors": [
+        {
+            "name": "Nicolas Chambrier",
+            "email": "naholyr@gmail.com"
+        }
+    ]
+}
