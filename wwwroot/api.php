@@ -27,6 +27,24 @@ $app['books_db'] = array(
 );
 
 
+// Books validator
+
+$schema = json_decode(file_get_contents('../books.schema.json'));
+$json_schema_validator = new JsonSchema\Validator();
+$app['book_validator'] = function ($book, &$errors) use ($schema, $json_schema_validator) {
+  if (is_string($book)) {
+    $book = json_decode($book);
+  }
+  $json_schema_validator->check($book, $schema);
+  if ($json_schema_validator->isValid()) {
+    return true;
+  } else {
+    $errors = $json_schema_validator->getErrors();
+    return false;
+  }
+};
+
+
 // Error management
 
 $app->error(function (Exception $e, $code) use ($app) {
