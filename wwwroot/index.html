@@ -8,7 +8,8 @@
 <body>
   <!-- list -->
   <h1>Books</h1>
-  <ul id="books-list"></ul>
+  <p id="books-list-waiting">Loading…</p>
+  <ul id="books-list" style="display:none"></ul>
   <script type="text/html" id="book-template">
     <li><strong>{{title}}</strong> ({{price}} €)<br><small>{{authors}}</small></li>
   </script>
