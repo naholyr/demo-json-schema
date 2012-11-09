@@ -17,6 +17,7 @@
   <!-- form -->
   <h2>Add new book</h2>
   <form method="post" id="book-form">
+    <pre class="error" style="display:none"></pre>
     <p>
       Book :
       <input type="text" name="title" placeholder="Title">
@@ -24,13 +25,15 @@
       <input type="text" name="price" placeholder="Price">
     </p>
     <div class="authors"></div>
+    <p><a href="#" class="new-author"><small>[+] author</small></a></p>
     <input type="submit">
   </form>
   <script type="text/html" id="form-author-template">
-    <p>
+    <p class="form-author">
       Author :
-      <input type="text" name="author[][name]" placeholder="Name">
-      <input type="text" name="author[][birthdate]" placeholder="Birth date">
+      <input type="text" name="authors[][name]" placeholder="Name">
+      <input type="text" name="authors[][birthdate]" placeholder="Birth date">
+      <a href="#" class="remove-author"><small>[-] author</small></a>
     </p>
   </script>
 
