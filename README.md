@@ -6,6 +6,8 @@ For PHP Tour Nantes 2012
 ```
 $ wget http://getcomposer.org/composer.phar
 $ php composer.phar install
+$ git submodule init
+$ git submodule update
 ```
 
 CLI
