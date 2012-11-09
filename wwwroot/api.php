@@ -99,6 +99,13 @@ $app->get('/books/$schema', function () use ($app) {
 });
 
 
+// Home
+
+$app->get('/', function () use ($app) {
+  return file_get_contents('index.html');
+});
+
+
 // "books" API
 
 $app->get('/books', function () use ($app) {

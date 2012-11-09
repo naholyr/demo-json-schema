@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Books</title>
+</head>
+
+<body>
+  <!-- list -->
+  <h1>Books</h1>
+  <ul id="books-list"></ul>
+  <script type="text/html" id="book-template">
+    <li><strong>{{title}}</strong> ({{price}} €)<br><small>{{authors}}</small></li>
+  </script>
+
+  <!-- form -->
+  <h2>Add new book</h2>
+  <form method="post" id="book-form">
+    <p>
+      Book :
+      <input type="text" name="title" placeholder="Title">
+      <input type="text" name="isbn" placeholder="ISBN">
+      <input type="text" name="price" placeholder="Price">
+    </p>
+    <div class="authors"></div>
+    <input type="submit">
+  </form>
+  <script type="text/html" id="form-author-template">
+    <p>
+      Author :
+      <input type="text" name="author[][name]" placeholder="Name">
+      <input type="text" name="author[][birthdate]" placeholder="Birth date">
+    </p>
+  </script>
+
+  <!-- JS -->
+  <script src="jquery.min.js"></script>
+  <script src="books.js"></script>
+</body>
+
+</html>
