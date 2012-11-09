@@ -1,5 +1,26 @@
 jQuery(function ($) {
 
+  // JSON-Schema validation
+  var validator = (function () {
+    var schema = null; // Will be defined as soon as we know it
+    var env = JSV.createEnvironment();
+    return {
+      setSchemaURL: function (url) {
+        $.ajax({url: url, type: "GET", dataType: "json"})
+          .done(function (_schema) { schema = _schema });
+      },
+      validate: function (object) {
+        if (!schema) return true; // No schema, no validation
+        // TODO
+        var report = env.validate(object, schema);
+        this.errors = report.errors;
+        return this.errors.length === 0;
+      },
+      errors: null
+    }
+  })();
+
+
   // Load list
 
   listBooks = (function () {
@@ -11,7 +32,18 @@ jQuery(function ($) {
       $list.hide().empty();
       $.ajax({url: "/books", type: "GET"})
         .fail(function (err) { alert('OH FUCK !\n' + err); })
-        .done(function (books) {
+        .done(function (books, status, xhr) {
+          // In headers, we'll find JSON-schema URL :)
+          var link = xhr.getResponseHeader('Link');
+          if (link) {
+            link.split(/\s*,\s*/).some(function (link) {
+              var m = link.match(/<?(.*?)>?\s*;\s*rel="?describedby"?/);
+              if (m) {
+                validator.setSchemaURL(m[1]);
+                return true;
+              }
+            });
+          }
           console.log('Books list', books);
           // Yeah, modern browsers only, it's a demo man, live with it
           var html = books.map(function (book) {
@@ -64,6 +96,11 @@ jQuery(function ($) {
         }
         return data;
       }, {});
+      // Client-side validation
+      if (!validator.validate(data)) {
+        $form.find('.error').text(JSON.stringify(validator.errors, null, 3)).show();
+        return;
+      }
       $.ajax({url: "/books", type: "POST", data: JSON.stringify(data), contentType: "application/json"})
         .fail(function (err) { $form.find('.error').text(JSON.stringify(JSON.parse(err.responseText), null, 3)).show() })
         .done(function () {
