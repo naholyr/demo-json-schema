@@ -1,3 +1,4 @@
 vendor
 composer.phar
 data/books.data.php
+wwwroot/doc
