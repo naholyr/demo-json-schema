@@ -25,7 +25,7 @@ $app['books_db'] = new FileDB($data_file);
 
 // Books validator
 
-$app['book_schema'] = json_decode(file_get_contents('../books.schema.json'));
+$app['book_schema'] = json_decode(file_get_contents('../schemas/books.json'));
 $app['json_schema_validator'] = new JsonSchema\Validator();
 
 

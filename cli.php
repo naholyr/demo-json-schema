@@ -2,7 +2,7 @@
 
 require './vendor/autoload.php';
 
-$schema = file_get_contents('./books.schema.json');
+$schema = file_get_contents('./schemas/books.json');
 
 $json = file_get_contents('php://stdin');
 
